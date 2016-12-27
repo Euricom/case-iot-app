@@ -29,6 +29,10 @@ namespace IoT.Web
         {
             // Add framework services.
             services.AddMvc();
+            services.AddCors(options => {
+                options.AddPolicy("AllowSpecificOrigin",
+                builder => builder.WithOrigins("http://localhost:8100"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

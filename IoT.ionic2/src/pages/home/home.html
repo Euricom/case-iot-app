@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Euricom Office Control</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+  <h3>Welcome!</h3>
+
+  <ion-item>
+    <ion-label>Front door</ion-label>
+    <ion-toggle [(ngModel)]="lock_FrontDoor" (click)="lock_FrontDoorClicked()" color="primary"></ion-toggle>
+  </ion-item>
+
+   <ion-item>
+    <ion-label>Main light</ion-label>
+    <ion-toggle [(ngModel)]="light_Main" (click)="light_MainClicked()" color="primary"></ion-toggle>
+  </ion-item>
+
+</ion-content>
