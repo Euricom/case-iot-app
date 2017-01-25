@@ -15,7 +15,15 @@ namespace IoT.Web.Controllers
         public IActionResult Status()
         {
             var next = new Random().Next(100);
-            return new ObjectResult((next % 2) == 0);
+            bool status = (next % 2) == 0;
+
+            var result = new
+            {
+                Name = User.Identity.Name,
+                Status = status
+            };
+
+            return new ObjectResult(result);
         }
 
         // POST api/door/open

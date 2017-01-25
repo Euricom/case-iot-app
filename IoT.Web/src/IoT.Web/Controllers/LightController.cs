@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using Microsoft.AspNetCore.Cors;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,7 +16,14 @@ namespace IoT.Web.Controllers
         public IActionResult Status()
         {
             var next = new Random().Next(100);
-            return new ObjectResult((next % 2) == 0);
+            bool status = (next % 2) == 0;
+
+            var result = new {
+                Name = User.Identity.Name,
+                Status = status
+            };
+
+            return new ObjectResult(result);
         }
 
         // POST api/light/on
