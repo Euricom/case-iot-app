@@ -9,7 +9,7 @@ namespace IoT.Web.Controllers
 {
     [Route("api/[controller]")]
     [EnableCors("AllowSpecificOrigin")]
-    [Authorize]
+    //[Authorize]
     public class DoorController : Controller
     {
         // GET: api/door/status
