@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -8,6 +9,7 @@ namespace IoT.Web.Controllers
 {
     [Route("api/[controller]")]
     [EnableCors("AllowSpecificOrigin")]
+    [Authorize]
     public class LightController : Controller
     {
         // GET: api/light/status

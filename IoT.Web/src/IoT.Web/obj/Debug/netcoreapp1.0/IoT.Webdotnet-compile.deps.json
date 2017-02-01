@@ -16,6 +16,7 @@
     ".NETCoreApp,Version=v1.0": {
       "IoT.Web/1.0.0": {
         "dependencies": {
+          "Microsoft.AspNetCore.Authorization": "1.1.0",
           "Microsoft.AspNetCore.Mvc": "1.1.0",
           "Microsoft.AspNetCore.Routing": "1.1.0",
           "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
@@ -2482,6 +2483,7 @@
     ".NETCoreApp,Version=v1.0/": {
       "IoT.Web/1.0.0": {
         "dependencies": {
+          "Microsoft.AspNetCore.Authorization": "1.1.0",
           "Microsoft.AspNetCore.Mvc": "1.1.0",
           "Microsoft.AspNetCore.Routing": "1.1.0",
           "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",

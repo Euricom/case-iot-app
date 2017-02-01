@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,6 +9,7 @@ namespace IoT.Web.Controllers
 {
     [Route("api/[controller]")]
     [EnableCors("AllowSpecificOrigin")]
+    [Authorize]
     public class DoorController : Controller
     {
         // GET: api/door/status
