@@ -1,14 +1,58 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Ionic Blank
+      Iot test page
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+  <h1 *ngIf="!claims">
+    Please login
+  </h1>
+  <h1 *ngIf="claims">
+    Hallo, {{name}}
+  </h1>
+
+  <button *ngIf="!claims" class="btn btn-default" ion-button (click)="login()">
+    get AccessToken
+  </button>
+
+  <div *ngIf="claims">
+
+    <button class="btn btn-default" ion-button (click)="logoff()">
+      Logout
+    </button>
+
+    <br>
+    <br>
+
+    <div>no command token needed:</div>
+    <button class="btn btn-default" ion-button (click)="getDeviceStatus('Door')">
+        getDeviceStatus - door
+    </button>
+
+    <div id="internalOnly">
+      <br>
+      <div>only on euricom wifi: - fake</div>
+      <button class="btn btn-default" ion-button (click)="getCommandToken()">
+        getCommandToken
+      </button>
+
+      <div *ngIf="commandToken">
+        <div>command token needed:</div>
+        <button class="btn btn-default" ion-button (click)="sendDoorCommand('lock', 'danalock_front_door')">
+          sendDoorCommand - lock danalock_front_door
+        </button>
+
+        <button class="btn btn-default" ion-button (click)="sendDoorCommand('unlock', 'danalock_front_door')">
+          sendDoorCommand - unlock danalock_front_door
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
 </ion-content>
