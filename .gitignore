@@ -1,60 +1,35 @@
-# Created by .ignore support plugin (hsz.mobi)
-### VisualStudioCode template
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-### Eclipse template
+# Specifies intentionally untracked files to ignore when using Git
+# http://git-scm.com/docs/gitignore
 
-.metadata
-bin/
-tmp/
+*~
+*.sw[mnpcod]
+*.log
 *.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.settings/
-.loadpath
-.recommenders
+*.tmp.*
+log.txt
+*.sublime-project
+*.sublime-workspace
+.vscode/
+npm-debug.log*
 
-# Eclipse Core
-.project
+.idea/
+.sourcemaps/
+.sass-cache/
+.tmp/
+.versions/
+coverage/
+dist/
+node_modules/
+tmp/
+temp/
+hooks/
+platforms/
+plugins/
+plugins/android.json
+plugins/ios.json
+www/
+$RECYCLE.BIN/
 
-# External tool builders
-.externalToolBuilders/
-
-# Locally stored "Eclipse launch configurations"
-*.launch
-
-# PyDev specific (Python IDE for Eclipse)
-*.pydevproject
-
-# CDT-specific (C/C++ Development Tooling)
-.cproject
-
-# JDT-specific (Eclipse Java Development Tools)
-.classpath
-
-# Java annotation processor (APT)
-.factorypath
-
-# PDT-specific (PHP Development Tools)
-.buildpath
-
-# sbteclipse plugin
-.target
-
-# Tern plugin
-.tern-project
-
-# TeXlipse plugin
-.texlipse
-
-# STS (Spring Tool Suite)
-.springBeans
-
-# Code Recommenders
-.recommenders/
-
+.DS_Store
+Thumbs.db
+UserInterfaceState.xcuserstate
