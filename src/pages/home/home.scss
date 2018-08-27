@@ -1,3 +1,8 @@
 page-home {
 
+  .item-md.item-range-disabled ion-label {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
 }

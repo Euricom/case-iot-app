@@ -1,17 +1,66 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Home</ion-title>
+    <ion-title>
+      <div>Euricom Smart Office</div>
+    </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
+  <div *ngIf="!hasLoggedIn">
+    <button class="btn btn-default" ion-button (click)="login()">
+      Login
+    </button>
+  </div>
+
+  <div *ngIf="hasLoggedIn">
+    <div style="float:right">
+      {{name}}
+      <ion-icon name="log-out" (click)="logout()" style="cursor:pointer;padding-left:5px;"></ion-icon>
+    </div>
+
+    <ion-list>
+
+      <br>
+      <br>
+      <div *ngIf="!this.commandToken" style="color:red;">Bediening uitgeschakeld zonder command token!</div>
+      <br>
+
+      <div *ngIf="this.cameraImages.length" style="cursor: pointer">
+        <ion-slides>
+          <ion-slide *ngFor="let image of cameraImages">
+            <img src="{{image.imageUri}}" style="max-width:50%;max-height:50%;">
+            <!--<ion-label style="float:right;">{{image.createdDateTime}}</ion-label>-->
+            <!--<ion-img src="{{image.imageUri}}"></ion-img>-->
+          </ion-slide>
+        </ion-slides>
+      </div>
+
+      <ion-item>
+        <ion-label *ngIf="this.cameraImages.length">{{this.cameraImagesTotal}} foto's van 2018-08-01 tot 2018-08-07</ion-label>
+        <button [disabled]="!this.commandToken" class="btn btn-default" style="float:right" ion-button (click)="takePicture()">
+          Neem foto
+        </button>
+      </ion-item>
+
+      <ion-item title="danalock">
+        <ion-label>Deur gesloten</ion-label>
+        <ion-toggle [(ngModel)]="this.doorLocked" [disabled]="!this.commandToken" (ngModelChange)="this.toggleDoor()"></ion-toggle>
+      </ion-item>
+
+      <ion-item title="wallmount">
+        <ion-label>Licht aan</ion-label>
+        <ion-toggle [(ngModel)]="this.lightOn" [disabled]="!this.commandToken" (ngModelChange)="this.toggleLight()"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <!--<ion-label style="float:left;">Light dimmer (disabled if not dimmable)</ion-label>-->
+        <ion-range min="0" max="100" step="10" [(ngModel)]="this.lightIntensity" [disabled]="!this.commandToken || !this.lightDimmable" (ngModelChange)="this.dimLight()">
+          <ion-icon small range-left name="sunny"></ion-icon>
+          <ion-icon range-right name="sunny"></ion-icon>
+        </ion-range>
+      </ion-item>
+    </ion-list>
+
+  </div>
+
 </ion-content>
