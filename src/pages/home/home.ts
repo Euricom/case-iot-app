@@ -1,10 +1,10 @@
-// https://eurismartoffice.azurewebsites.net/swagger/
-
 import {Component} from '@angular/core';
-import {NavController} from 'ionic-angular';
+// import {NavController} from 'ionic-angular';
 import {OAuthService} from 'angular-oauth2-oidc';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Events} from 'ionic-angular';
+import {ViewChild} from '@angular/core';
+import {Slides} from 'ionic-angular';
 
 @Component({
   selector: 'page-home',
@@ -12,38 +12,51 @@ import {Events} from 'ionic-angular';
 })
 export class HomePage {
 
-  commandToken = undefined;
+  @ViewChild('slides') slides: Slides;
 
+  commandToken = undefined;
+  _accessToken = 'DnR8TdVOO0eu8J9H9BsS2g==';
+
+  // door
   doorLocked = false;
+  unlockRequested = false;
+  lockRequested = false;
+
+  //camera
   cameraOn = false;
   cameraImages = [];
   cameraImagesTotal = 0;
+  fromDateTime = undefined;
+  takePictureRequested = false;
+
+  // light
   lightOn = false;
+  lightOnRequested = false;
+  lightOffRequested = false;
+
+  // dimmer
   lightDimmable = false;
   lightIntensity = 0;
 
-  constructor(public navCtrl: NavController, private oauthService: OAuthService, public http: HttpClient, private events: Events) {
-
+  constructor(private oauthService: OAuthService, public http: HttpClient, private events: Events) {
   }
 
   ionViewDidLoad() {
-    console.log('window.location.origin + "/"', window.location.origin);
-
     if (!this.hasLoggedIn) this.setupAuthentication();
     else this.refreshStatus();
   }
 
   refreshStatus() {
     return Promise.all([
-      this.getCameraStatus(),
       this.getCameraImages(),
+      this.getCameraStatus(),
       this.getDoorStatus(),
       this.getLightStatus(),
-      this.getCommandToken()])
+      this.getCommandToken()]
+    )
   }
 
   setupAuthentication() {
-
     // see also:
     // https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-openid-connect-code
 
@@ -99,7 +112,6 @@ export class HomePage {
         // console.debug(context);
 
         this.refreshStatus();
-
       },
     });
   }
@@ -122,7 +134,6 @@ export class HomePage {
 
   getCameraStatus() {
     console.log(`getCameraStatus call sent`);
-
     let headers = this.createAccessTokenHeader();
 
     return this.http
@@ -138,33 +149,44 @@ export class HomePage {
 
   getCameraImages() {
     console.log(`getCameraImages call sent`);
-
     let headers = this.createAccessTokenHeader();
 
+    // Dit zijn de redenen voor een 400:
+    // Tijdsinterval > 7dagen
+    // untilDateTime < fromDateTime
+    //
+    // Indien fromDateTime == null => fromDateTime = Today
+    // Indien untilDateTime == null => untilDateTime = fromDateTime + 24h
+    // Indien untilDateTime > now => untilDateTime = now
+    //
+    // Formaat DateTime = ‘yyyy-MM-dd’ of ‘yyyy-MM-ddTHH:mm:ss.nnnZ’
+
     let date = new Date();
-    date.setDate(date.getDate() - 11);
-    let oneMonthAgo = date.toISOString().split('T')[0]; // "yyyy-dd-mm"
+    date.setDate(date.getDate() - 6);
+    this.fromDateTime = date.toISOString().split('T')[0]; // "yyyy-dd-mm"
 
     date = new Date();
-    date.setDate(date.getDate() - 5);
+    date.setDate(date.getDate() + 1);
     let tomorrow = date.toISOString().split('T')[0]; // "yyyy-dd-mm"
 
     return this.http
-      .get(`https://eurismartoffice.azurewebsites.net/api/Camera/camera/images?fromDateTime=${oneMonthAgo}&untilDateTime=${tomorrow}&resource=1428c5bf-37c4-41be-8ec0-bd72791f91b5`, {headers: headers})
+      .get(`https://eurismartoffice.azurewebsites.net/api/Camera/camera/images?fromDateTime=${this.fromDateTime}&untilDateTime=${tomorrow}&resource=1428c5bf-37c4-41be-8ec0-bd72791f91b5`, {headers: headers})
       .subscribe(data => {
         console.log(`getCameraImages response:`, data);
 
-        this.cameraImages = data['images'];
+        let images = data['images'];
+
+        // order newest first
+        this.cameraImages = images.sort((a, b) => b.createdDateTime.localeCompare(a.createdDateTime));
         this.cameraImagesTotal = data['total'];
+
       }, error => {
         this.publishError('getCameraImages', error);
       });
   }
 
-
   getDoorStatus() {
     console.log(`getDoorStatus call sent`);
-
     let headers = this.createAccessTokenHeader();
 
     return this.http
@@ -173,6 +195,18 @@ export class HomePage {
         console.log(`getDoorStatus response:`, data);
 
         this.doorLocked = data[0]['status'];
+
+        if (this.lockRequested && this.doorLocked) {
+          this.lockRequested = false;
+        }
+
+        if (this.unlockRequested && !this.doorLocked) {
+          this.unlockRequested = false;
+        }
+
+        setTimeout(() => {
+          this.getDoorStatus();
+        }, 5000);
       }, error => {
         this.publishError('getDoorStatus', error);
       });
@@ -180,7 +214,6 @@ export class HomePage {
 
   getLightStatus() {
     console.log(`getLightStatus call sent`);
-
     let headers = this.createAccessTokenHeader();
 
     return this.http
@@ -190,6 +223,18 @@ export class HomePage {
 
         this.lightOn = data[0]['status'];
         this.lightDimmable = data[0]['dimmable'];
+
+        if (this.lightOnRequested && this.lightOn) {
+          this.lightOnRequested = false;
+        }
+
+        if (this.lightOffRequested && !this.lightOn) {
+          this.lightOffRequested = false;
+        }
+
+        setTimeout(() => {
+          this.getLightStatus();
+        }, 5000);
       }, error => {
         this.publishError('getLightStatus', error);
       });
@@ -197,46 +242,52 @@ export class HomePage {
 
   getCommandToken() {
     console.log(`getCommandToken call sent`);
-
-    // TODO: must get accessToken from oauth ?
-    const accessToken = 'DnR8TdVOO0eu8J9H9BsS2g==';
-    console.log('accessToken', accessToken);
+    console.log('this._accessToken', this._accessToken);
 
     let headers = new HttpHeaders()
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/json');
 
-    let postParams = {"AccessToken": accessToken};
+    let postParams = {"AccessToken": this._accessToken};
 
-    this.http.post("http://command-token-api", postParams, {headers: headers})
+    this.http.post("http://thijscrombeen.asuscomm.com:8800/api/security/command-token", postParams, {headers: headers})
       .subscribe(data => {
         console.log('getCommandToken response:', data);
 
         // this.commandToken = data['_body'].split('"')[1];
+
         this.commandToken = data;
         console.log('this.commandToken', this.commandToken);
       }, error => {
 
         this.publishError('getCommandToken', error);
-
       });
   }
 
   // BELOW ONLY WITH COMMAND TOKEN
 
-  // !!! switch = new model value !!!
-  toggleDoor(item) {
-    if (this.doorLocked) this.sendDoorCommand('lock', 'danalock');
-    else this.sendDoorCommand('unlock', 'danalock');
+  requestUnlockDoor() {
+    this.unlockRequested = true;
+    this.sendDoorCommand('unlock', 'danalock');
   }
 
-  // !!! switch = new model value !!!
-  toggleLight() {
-    if (this.lightOn) this.sendLightCommand('on', 'wallmount');
-    else this.sendLightCommand('off', 'wallmount');
+  requestLockDoor() {
+    this.lockRequested = true;
+    this.sendDoorCommand('lock', 'danalock');
+  }
+
+  requestLightOn() {
+    this.lightOnRequested = true;
+    this.sendLightCommand('on', 'wallmount');
+  }
+
+  requestLightOff() {
+    this.lightOffRequested = true;
+    this.sendLightCommand('off', 'wallmount');
   }
 
   takePicture() {
+    this.takePictureRequested = true;
     console.log(`takePicture call sent`);
 
     let headers = new HttpHeaders()
@@ -282,10 +333,16 @@ export class HomePage {
       });
   }
 
+  next() {
+    this.slides.slideNext();
+  }
+
+  prev() {
+    this.slides.slidePrev();
+  }
+
   sendLightCommand(action, name) {
     console.log(`sendLightCommand ${action} ${name} call sent`);
-
-    // let headers = this.createAccessTokenHeader();
 
     let headers = new HttpHeaders()
       .set('Accept', 'application/json')
@@ -321,6 +378,17 @@ export class HomePage {
     let claims = this.oauthService.getIdentityClaims();
     if (!claims) return null;
     return claims;
+  }
+
+  public getImageIndex() {
+    let imageIndex = 1;
+
+    if (this.cameraImages.length > 0 && this.slides) {
+      imageIndex = this.slides.getActiveIndex();
+      if (!imageIndex) imageIndex = 1;
+      else imageIndex += 1;
+    }
+    return imageIndex;
   }
 }
 

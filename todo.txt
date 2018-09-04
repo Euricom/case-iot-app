@@ -1,12 +1,14 @@
-- solve 409 conflicts when sending commands too fast. Probably due to time processing the command.
-=> idea: poll status for x seconds after command sent. re-enable after x seconds or when status has changed.
-- test on actual mobile devices
+TASKS:
+- improve polling strategy
 - add specs
-- deployment to app stores
+- setup deployment to app stores
 - graceful error handling when AD authentication does not work
+- add readme: API docu: https://eurismartoffice.azurewebsites.net/swagger/
 
 BUGS:
-- take picture does not work ? refresh after does not show new image.
-- sliding pictures on mobile does not work
-- AD login via mobile does not work
+- unauth after long time: refetch credentials
 - hot reloading does not reload status
+=> idea: optimize loading/init and reloading of status
+
+- date range display is not visible on iPhone 7
+- counter of images is incorrect 18/17
