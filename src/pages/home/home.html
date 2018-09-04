@@ -24,8 +24,8 @@
     <ion-list>
 
       <ion-item no-lines>
-        <ion-label *ngIf="this.cameraImages.length">{{this.fromDateTime}} until now</ion-label>
-        <button [disabled]="!this.commandToken || this.takePictureRequested || this.cameraOn" class="btn btn-default" style="float:right" ion-button (click)="takePicture()">
+        <ion-label *ngIf="this.cameraImages.length">{{this.fromDateTime}} - now</ion-label>
+        <button [disabled]="!this.commandToken || !this.cameraOn" class="btn btn-default" style="float:right" ion-button (click)="takePicture()">
           Take new!
         </button>
       </ion-item>
@@ -48,26 +48,19 @@
 
       <ion-item title="danalock" no-lines>
         <ion-label item-left>Door locked</ion-label>
-        <ion-icon item-right name="disc" [color]="this.doorLocked ? 'safe' : 'danger'"></ion-icon>
-        <!--<ion-toggle item-right [(ngModel)]="this.doorLocked" [disabled]="!this.commandToken" (ngModelChange)="this.toggleDoor(!this.doorLocked)"></ion-toggle>-->
-        <button item-right [disabled]="!this.commandToken || this.lockRequested || this.unlockRequested" *ngIf="this.doorLocked" class="btn btn-default" ion-button (click)="this.requestUnlockDoor()">
-          Request unlock
-        </button>
-        <button item-right [disabled]="!this.commandToken || this.lockRequested || this.unlockRequested" *ngIf="!this.doorLocked" class="btn btn-default" ion-button (click)="this.requestLockDoor()">
-          Request lock
-        </button>
+        <ion-toggle item-right [(ngModel)]="this.doorLocked" [disabled]="!this.commandToken" (ngModelChange)="this.toggleDoor(!this.doorLocked)"></ion-toggle>
+        <!--<ion-icon item-right name="disc" [color]="this.doorLocked ? 'safe' : 'danger'"></ion-icon>-->
+        <!--<button item-right [disabled]="!this.commandToken" *ngIf="this.doorLocked" class="btn btn-default" ion-button (click)="this.requestUnlockDoor()">-->
+        <!--Request unlock-->
+        <!--</button>-->
+        <!--<button item-right [disabled]="!this.commandToken" *ngIf="!this.doorLocked" class="btn btn-default" ion-button (click)="this.requestLockDoor()">-->
+        <!--Request lock-->
+        <!--</button>-->
       </ion-item>
 
       <ion-item title="wallmount" no-lines>
         <ion-label item-left>Light on</ion-label>
-        <ion-icon item-right name="disc" [color]="this.lightOn ? 'safe' : 'danger'"></ion-icon>
-        <!--<ion-toggle item-right [(ngModel)]="this.doorLocked" [disabled]="!this.commandToken" (ngModelChange)="this.toggleDoor(!this.doorLocked)"></ion-toggle>-->
-        <button item-right [disabled]="!this.commandToken || this.lightOffRequested" *ngIf="this.lightOn" class="btn btn-default" ion-button (click)="this.requestLightOff()">
-          Request off
-        </button>
-        <button item-right [disabled]="!this.commandToken || this.lightOnRequested" *ngIf="!this.lightOn" class="btn btn-default" ion-button (click)="this.requestLightOn()">
-          Request on
-        </button>
+        <ion-toggle item-right [(ngModel)]="this.lightOn" [disabled]="!this.commandToken" (ngModelChange)="this.toggleLight(!this.lightOn)"></ion-toggle>-->
       </ion-item>
       <!--<ion-item>-->
       <!--&lt;!&ndash;<ion-label style="float:left;">Light dimmer (disabled if not dimmable)</ion-label>&ndash;&gt;-->

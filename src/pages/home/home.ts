@@ -196,17 +196,6 @@ export class HomePage {
 
         this.doorLocked = data[0]['status'];
 
-        if (this.lockRequested && this.doorLocked) {
-          this.lockRequested = false;
-        }
-
-        if (this.unlockRequested && !this.doorLocked) {
-          this.unlockRequested = false;
-        }
-
-        setTimeout(() => {
-          this.getDoorStatus();
-        }, 5000);
       }, error => {
         this.publishError('getDoorStatus', error);
       });
@@ -224,17 +213,6 @@ export class HomePage {
         this.lightOn = data[0]['status'];
         this.lightDimmable = data[0]['dimmable'];
 
-        if (this.lightOnRequested && this.lightOn) {
-          this.lightOnRequested = false;
-        }
-
-        if (this.lightOffRequested && !this.lightOn) {
-          this.lightOffRequested = false;
-        }
-
-        setTimeout(() => {
-          this.getLightStatus();
-        }, 5000);
       }, error => {
         this.publishError('getLightStatus', error);
       });
@@ -266,6 +244,11 @@ export class HomePage {
 
   // BELOW ONLY WITH COMMAND TOKEN
 
+  toggleDoor(unlockDoor) {
+    if (unlockDoor) this.requestUnlockDoor();
+    else this.requestLockDoor();
+  }
+
   requestUnlockDoor() {
     this.unlockRequested = true;
     this.sendDoorCommand('unlock', 'danalock');
@@ -274,6 +257,11 @@ export class HomePage {
   requestLockDoor() {
     this.lockRequested = true;
     this.sendDoorCommand('lock', 'danalock');
+  }
+
+  toggleLight(lightsOut) {
+    if (lightsOut) this.requestLightOff();
+    else this.requestLightOn();
   }
 
   requestLightOn() {
@@ -327,7 +315,11 @@ export class HomePage {
 
     this.http.post(`https://eurismartoffice.azurewebsites.net/api/Door/${action}/${name}`, postParams, {headers: headers})
       .subscribe(data => {
-        console.log(`sendLightCommand ${action} ${name} response:`, data);
+        console.log(`sendDoorCommand ${action} ${name} response:`, data);
+
+        setTimeout(() => {
+          this.getDoorStatus();
+        }, 3000);
       }, error => {
         this.publishError('sendDoorCommand', error);
       });

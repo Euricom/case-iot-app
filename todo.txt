@@ -1,5 +1,5 @@
 TASKS:
-- improve polling strategy
+- improve polling strategy: (after command sent: disable button, 2 x settimeout (if status !== requested), enable button and force status to current status.
 - add specs
 - setup deployment to app stores
 - graceful error handling when AD authentication does not work
@@ -9,6 +9,4 @@ BUGS:
 - unauth after long time: refetch credentials
 - hot reloading does not reload status
 => idea: optimize loading/init and reloading of status
-
-- date range display is not visible on iPhone 7
-- counter of images is incorrect 18/17
+- counter of images is incorrect 18/17 (after swiping last image twice?)
