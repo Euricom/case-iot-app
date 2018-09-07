@@ -13,7 +13,7 @@ import {Slides} from 'ionic-angular';
 export class HomePage {
 
   @ViewChild('slides') slides: Slides;
-
+  isInitialized = false;
   commandToken = undefined;
   _accessToken = 'DnR8TdVOO0eu8J9H9BsS2g==';
 
@@ -23,7 +23,6 @@ export class HomePage {
   lockRequested = false;
 
   //camera
-  cameraOn = false;
   cameraImages = [];
   cameraImagesTotal = 0;
   fromDateTime = undefined;
@@ -47,13 +46,19 @@ export class HomePage {
   }
 
   refreshStatus() {
-    return Promise.all([
-      this.getCameraImages(),
-      this.getCameraStatus(),
-      this.getDoorStatus(),
-      this.getLightStatus(),
-      this.getCommandToken()]
-    )
+    this.isInitialized = false;
+
+    return Promise
+      .all([
+        this.getCameraImages(),
+        this.getCameraStatus(),
+        this.getDoorStatus(),
+        this.getLightStatus(),
+        this.getCommandToken()]
+      )
+      .then(() => {
+        this.isInitialized = true;
+      });
   }
 
   setupAuthentication() {
@@ -141,7 +146,7 @@ export class HomePage {
       .subscribe(data => {
         console.log(`getCameraStatus response:`, data);
 
-        this.cameraOn = data[0]['status'];
+        // this.cameraName = data[0]['status'];
       }, error => {
         this.publishError('getCameraStatus', error);
       });
@@ -292,6 +297,7 @@ export class HomePage {
         console.log(`takePicture response:`, data);
 
         this.getCameraImages();
+
       }, error => {
         this.publishError('takePicture', error);
       });
@@ -319,7 +325,8 @@ export class HomePage {
 
         setTimeout(() => {
           this.getDoorStatus();
-        }, 3000);
+        }, 5000);
+
       }, error => {
         this.publishError('sendDoorCommand', error);
       });
@@ -348,6 +355,11 @@ export class HomePage {
     this.http.post(`https://eurismartoffice.azurewebsites.net/api/Light/${name}/${action}`, postParams, {headers: headers})
       .subscribe(data => {
         console.log(`sendLightCommand ${action} ${name} response:`, data);
+
+        setTimeout(() => {
+          this.getLightStatus();
+        }, 5000);
+
       }, error => {
         this.publishError('sendLightCommand', error);
       });

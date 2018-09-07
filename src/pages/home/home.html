@@ -13,7 +13,11 @@
     </button>
   </div>
 
-  <div *ngIf="hasLoggedIn">
+  <div *ngIf="hasLoggedIn && !isInitialized">
+    Initializing...
+  </div>
+
+  <div *ngIf="hasLoggedIn && isInitialized">
 
     <div *ngIf="!this.commandToken" style="color:red;float:left;">Controls disabled without command token!</div>
     <div style="float:right">
@@ -25,7 +29,7 @@
 
       <ion-item no-lines>
         <ion-label *ngIf="this.cameraImages.length">{{this.fromDateTime}} - now</ion-label>
-        <button [disabled]="!this.commandToken || !this.cameraOn" class="btn btn-default" style="float:right" ion-button (click)="takePicture()">
+        <button [disabled]="!this.commandToken" class="btn btn-default" style="float:right" ion-button (click)="takePicture()">
           Take new!
         </button>
       </ion-item>
